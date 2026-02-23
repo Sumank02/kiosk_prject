@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.tele_kiosk"
+    namespace = "com.bharat.telekiosk"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,9 +20,17 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file('path/to/keystore.jks')  // TODO: Replace with your keystore file path
+            storePassword = 'storePassword'  // TODO: Replace with your store password
+            keyAlias = 'keyAlias'  // TODO: Replace with your key alias
+            keyPassword = 'keyPassword'  // TODO: Replace with your key password
+        }
+    }
+
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.tele_kiosk"
+        applicationId = "com.bharat.telekiosk"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -33,9 +41,7 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 }
