@@ -5,8 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class BackendService {
-  // replace with real endpoint if you have one
-  final String? endpoint = null; // example: 'https://example.com/log'
+  // If you have a real server, set this to its HTTPS endpoint. Leave `null` to keep logging local (mocked).
+  // WARNING: ensure any real backend handles authentication and complies with privacy laws.
+  final String? endpoint = null; // e.g.: 'https://api.yourdomain.com/log'
 
   Future<bool> logAction(Map<String, dynamic> payload) async {
     try {
