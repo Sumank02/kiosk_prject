@@ -25,31 +25,42 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
   void initState() {
     super.initState();
     // Listen to doctors and filter online
-    final db = FirebaseDatabase.instanceFor(app: Firebase.app(), databaseURL: _dbUrl);
-    final doctorsRef = db.ref('doctors');
-    _sub = doctorsRef.onValue.listen((event) {
-      final raw = event.snapshot.value;
-      final List<Map<String, String>> found = [];
-      if (raw is Map) {
-        raw.forEach((_, v) {
-          final map = (v as Map?) ?? {};
-          final status = (map['status']?.toString().toLowerCase() ?? 'offline');
-          if (status == 'online') {
-            found.add({
-              'name': map['name']?.toString() ?? 'Doctor',
-              'speciality': map['speciality']?.toString() ?? 'General',
-            });
+    try {
+      final db = FirebaseDatabase.instanceFor(app: Firebase.app(), databaseURL: _dbUrl);
+      final doctorsRef = db.ref('doctors');
+      _sub = doctorsRef.onValue.listen((event) {
+        final raw = event.snapshot.value;
+        final List<Map<String, String>> found = [];
+        if (raw is Map) {
+          raw.forEach((_, v) {
+            final map = (v as Map?) ?? {};
+            final status = (map['status']?.toString().toLowerCase() ?? 'offline');
+            if (status == 'online') {
+              found.add({
+                'name': map['name']?.toString() ?? 'Doctor',
+                'speciality': map['speciality']?.toString() ?? 'General',
+              });
+            }
+          });
+        }
+        setState(() {
+          _onlineDoctors = found;
+          // Clear selection if not in new list
+          if (_selectedDoctor != null && !_onlineDoctors.any((d) => d['name'] == _selectedDoctor!['name'])) {
+            _selectedDoctor = null;
           }
         });
-      }
-      setState(() {
-        _onlineDoctors = found;
-        // Clear selection if not in new list
-        if (_selectedDoctor != null && !_onlineDoctors.any((d) => d['name'] == _selectedDoctor!['name'])) {
-          _selectedDoctor = null;
-        }
+      }, onError: (e) {
+        setState(() {
+          _status = 'Error loading doctors: $e';
+          _onlineDoctors = [];
+        });
       });
-    });
+    } catch (e) {
+      setState(() {
+        _status = 'Unable to connect to database';
+      });
+    }
   }
 
   @override
@@ -72,8 +83,13 @@ class _BookAppointmentPageState extends State<BookAppointmentPage> {
       'timestamp': DateTime.now().toIso8601String(),
     };
     setState(() => _status = 'Booking...');
-    final resp = await Provider.of<BackendService>(context, listen: false).logAction({'action': 'book', 'payload': payload});
-    setState(() => _status = resp ? 'Booked successfully' : 'Booking failed');
+    try {
+      final resp = await Provider.of<BackendService>(context, listen: false)
+          .logAction({'action': 'book', 'payload': payload});
+      setState(() => _status = resp ? 'Booked successfully' : 'Booking failed');
+    } catch (e) {
+      setState(() => _status = 'Booking failed: $e');
+    }
   }
 
   @override
