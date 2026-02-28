@@ -9,8 +9,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _userCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
-  final hardUser = 'kioskuser';
-  final hardPass = 'kiosk@123';
+
+  // Demo credentials – do NOT hardcode in production. Consider using
+  // secure storage or an authentication service (e.g. Firebase Auth).
+  static const String _demoUser = 'kioskuser';
+  static const String _demoPass = 'kiosk@123';
 
   String? _error;
 
