@@ -5,9 +5,12 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 class WebSocketService {
-  // Put a working websocket server URL. For assignment/testing you may use ws://echo.websocket.org (deprecated) or your local server.
-  // For demonstration, use a placeholder - replace it with your test server.
-  final String url = 'wss://ws.ifelse.io'; // public echo service for testing
+  // For production, set this to your WebSocket server URL (wss://...).
+  // Current value is a public echo service used for demonstration only;
+  // it may be unreliable and does not provide real data.
+  // If you don't need WebSocket functionality, you can disable the service
+  // by setting `enabled = false` where it's provided or by leaving it unused.
+  final String url = 'wss://ws.ifelse.io'; // TODO: replace with real WS endpoint
   WebSocketChannel? _channel;
   StreamController<String> _controller = StreamController.broadcast();
   bool _connected = false;
