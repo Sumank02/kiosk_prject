@@ -75,29 +75,15 @@ class _DoctorStatusPageState extends State<DoctorStatusPage> {
         _lastMsg = 'firebase_update';
       });
       if (!anyOnline) _alertOffline();
-      Provider.of<BackendService>(context, listen: false).logAction({'action': 'doctor_status_update_fb', 'anyOnline': anyOnline, 'count': doctors.length});
+      Provider.of<BackendService>(context, listen: false)
+          .logAction({'action': 'doctor_status_update_fb', 'anyOnline': anyOnline, 'count': doctors.length});
+    }, onError: (e) {
+      setState(() {
+        _lastMsg = 'firebase error: $e';
+      });
     });
   }
 
-  Future<void> _seedSample() async {
-    try {
-      final db = FirebaseDatabase.instanceFor(app: Firebase.app(), databaseURL: _dbUrl);
-      final doctorsRef = db.ref('doctors');
-      // Clear and push children to avoid invalid key characters
-      await doctorsRef.set(null);
-      final seed = [
-        {'name': 'Dr Alice', 'status': 'online'},
-        {'name': 'Dr Bob', 'status': 'offline'},
-        {'name': 'Dr Carol', 'status': 'online'},
-      ];
-      for (final item in seed) {
-        await doctorsRef.push().set(item);
-      }
-      setState(() => _lastMsg = 'seeded sample');
-    } catch (e) {
-      setState(() => _lastMsg = 'seed failed: $e');
-    }
-  }
 
   void _alertOffline() {
     // UI alert when doctor goes offline
