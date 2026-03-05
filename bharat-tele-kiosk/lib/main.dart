@@ -13,6 +13,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String kRealtimeDbUrl = 'https://tele-kiosk-default-rtdb.firebaseio.com/';
 
+// By default we auto-logout after this many minutes of inactivity. You can
+// overwrite the value at runtime by storing an integer under
+// `inactivityMinutes` in shared preferences (e.g. via an admin settings page).
+const int kDefaultInactivityMinutes = 2;
+
 Future<void> _seedDoctorsOnce() async {
   final db = FirebaseDatabase.instanceFor(app: Firebase.app(), databaseURL: kRealtimeDbUrl);
   final DatabaseReference doctorsRef = db.ref("doctors");
@@ -35,8 +40,13 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   bool dark = prefs.getBool('darkTheme') ?? false;
 
-  // Seed doctors once (idempotent in this demo; will overwrite the node)
-  try { await _seedDoctorsOnce(); } catch (_) {}
+  // Seed doctors once (idempotent in this demo; will overwrite the node).
+  // In a real application you would not do this on every startup.
+  try {
+    await _seedDoctorsOnce();
+  } catch (_) {
+    // ignore failures (e.g. offline)
+  }
 
   runApp(
     MultiProvider(
@@ -56,18 +66,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // Auto-lock inactivity timer (2 minutes)
+  // Auto-lock inactivity timer (configurable)
   Timer? _inactivityTimer;
+  int _timeoutMinutes = kDefaultInactivityMinutes;
 
   @override
   void initState() {
     super.initState();
+    _loadTimeout();
+  }
+
+  Future<void> _loadTimeout() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _timeoutMinutes = prefs.getInt('inactivityMinutes') ?? kDefaultInactivityMinutes;
+    } catch (e) {
+      _timeoutMinutes = kDefaultInactivityMinutes;
+    }
     _resetInactivityTimer();
   }
 
   void _resetInactivityTimer() {
     _inactivityTimer?.cancel();
-    _inactivityTimer = Timer(Duration(minutes: 2), () {
+    _inactivityTimer = Timer(Duration(minutes: _timeoutMinutes), () {
       // On inactivity -> logout (go back to login)
       Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
         MaterialPageRoute(builder: (_) => LoginPage()), (r) => false);
