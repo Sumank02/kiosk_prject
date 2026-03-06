@@ -7,11 +7,19 @@ class ThemeNotifier with ChangeNotifier {
 
   ThemeMode get themeMode => _mode;
 
-  toggleMode() async {
-    _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setBool('darkTheme', _mode == ThemeMode.dark);
-    notifyListeners();
+  Future<bool> toggleMode() async {
+    try {
+      _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('darkTheme', _mode == ThemeMode.dark);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // If save fails, revert the mode change
+      _mode = _mode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+      print('Theme toggle save failed: $e');
+      return false;
+    }
   }
 }
 
