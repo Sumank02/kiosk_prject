@@ -17,7 +17,9 @@ TeleKiosk is a simple kiosk-style app for booking a telemedicine appointment and
 - For Android builds: Android Studio (or just use an Android device with Developer Mode) is helpful.
 - For Windows builds: a Windows PC is enough.
 
-The app is built with Flutter and already includes the necessary project files. If you just want to run it without development tools, see “Quick start (no coding)” below.
+The app is built with Flutter and already includes the necessary project files. This repo also contains a copy of the Flutter SDK (`flutter_windows_3.35.4-stable/`) for convenience; you can delete it if you already have Flutter installed to reduce repo size.
+
+If you just want to run it without development tools, see “Quick start (no coding)” below.
 
 ## Quick start (no coding)
 You have two easy options. Pick the one that suits you:
