@@ -35,7 +35,12 @@ Future<void> _seedDoctorsOnce() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  String? initError;
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    initError = e.toString();
+  }
 
   final prefs = await SharedPreferences.getInstance();
   bool dark = prefs.getBool('darkTheme') ?? false;
@@ -55,12 +60,15 @@ void main() async {
         Provider(create: (_) => WebSocketService()),
         Provider(create: (_) => BackendService()),
       ],
-      child: MyApp(),
+      child: MyApp(initError: initError),
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
+  final String? initError;
+  const MyApp({this.initError});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -100,6 +108,26 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<ThemeNotifier>(context);
+
+    if (widget.initError != null) {
+      return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'TeleKiosk',
+        home: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Unable to initialize app:\n${widget.initError}',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: _resetInactivityTimer,
       onPanDown: (_) => _resetInactivityTimer(),
