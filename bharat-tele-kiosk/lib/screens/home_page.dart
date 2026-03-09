@@ -11,16 +11,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _showOfflineAlert = false;
-
   @override
   void initState() {
     super.initState();
     // subscribe to doctor status via provider? We'll do that in DoctorStatus screen.
   }
 
-  void _toggleTheme() {
-    Provider.of<ThemeNotifier>(context, listen: false).toggleMode();
+  Future<void> _toggleTheme() async {
+    final success = await Provider.of<ThemeNotifier>(context, listen: false).toggleMode();
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Unable to save theme preference')));
+    }
   }
 
   void _logAction(String action) {
