@@ -3,19 +3,28 @@ import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
   final Widget next;
-  SplashScreen({required this.next});
+  const SplashScreen({required this.next, super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 2), () {
+    _timer = Timer(Duration(seconds: 2), () {
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => widget.next));
     });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
