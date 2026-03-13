@@ -5,30 +5,32 @@ import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
 class WebSocketService {
-  // For production, set this to your WebSocket server URL (wss://...).
-  // Current value is a public echo service used for demonstration only;
-  // it may be unreliable and does not provide real data.
-  // If you don't need WebSocket functionality, you can disable the service
-  // by setting `enabled = false` where it's provided or by leaving it unused.
-  final String url = 'wss://ws.ifelse.io'; // TODO: replace with real WS endpoint
+  /// WebSocket server URL, or null to disable.
+  ///
+  /// Defaults to an echo service for demo purposes. Replace with a real URL for
+  /// production or provide `null` to disable WebSocket usage.
+  final String? url;
+
+  WebSocketService({this.url = 'wss://ws.ifelse.io', this.enabled = true});
+
   WebSocketChannel? _channel;
   StreamController<String> _controller = StreamController.broadcast();
   bool _connected = false;
   // Allow disabling WS entirely (we rely on Firebase instead)
-  bool enabled = true;
+  bool enabled;
 
   Stream<String> get stream => _controller.stream;
 
   void connect() {
-    if (!enabled) {
-      // No-op when disabled; prevents noisy network errors in offline environments
+    if (!enabled || url == null || url!.isEmpty) {
+      // No-op when disabled or when no URL is configured; prevents noisy network errors.
       return;
     }
     // Build a resilient connection that never crashes the app
     () async {
       try {
         // Attempt a socket DNS resolution first to avoid throwing inside connect
-        final host = Uri.parse(url).host;
+        final host = Uri.parse(url!).host;
         final lookups = await InternetAddress.lookup(host).timeout(Duration(seconds: 3));
         if (lookups.isEmpty) throw const SocketException('DNS lookup returned empty');
 
