@@ -20,7 +20,7 @@ class _LoginPageState extends State<LoginPage> {
   void _tryLogin() {
     final u = _userCtrl.text.trim();
     final p = _passCtrl.text.trim();
-    if (u == hardUser && p == hardPass) {
+    if (u == _demoUser && p == _demoPass) {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => HomePage()));
     } else {
       setState(() => _error = 'Invalid credentials');
