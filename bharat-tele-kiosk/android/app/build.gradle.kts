@@ -20,12 +20,15 @@ android {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
+    // Optional release signing config.
+    // Replace with your real keystore path and credentials for production release builds.
+    // Keep this commented or unset for local debug and CI-managed signing.
     signingConfigs {
         create("release") {
-            storeFile = file('path/to/keystore.jks')  // TODO: Replace with your keystore file path
-            storePassword = 'storePassword'  // TODO: Replace with your store password
-            keyAlias = 'keyAlias'  // TODO: Replace with your key alias
-            keyPassword = 'keyPassword'  // TODO: Replace with your key password
+            // storeFile = file("path/to/keystore.jks")
+            // storePassword = "storePassword"
+            // keyAlias = "keyAlias"
+            // keyPassword = "keyPassword"
         }
     }
 
