@@ -4,12 +4,7 @@ import 'package:provider/provider.dart';
 import 'theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'widgets/splash.dart';
-import 'screens/login_page.dart';
-import 'screens/home_page.dart';
-import 'services/websocket_service.dart';
-import 'services/backend_service.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'firebase_options.dart';
 
 const String kRealtimeDbUrl = 'https://tele-kiosk-default-rtdb.firebaseio.com/';
 
@@ -37,7 +32,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   String? initError;
   try {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   } catch (e) {
     initError = e.toString();
   }
