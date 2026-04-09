@@ -7,8 +7,11 @@ import 'package:web_socket_channel/status.dart' as status;
 class WebSocketService {
   /// WebSocket server URL, or null to disable.
   ///
-  /// Defaults to an echo service for demo purposes. Replace with a real URL for
-  /// production or provide `null` to disable WebSocket usage.
+  /// WARNING: Default URL 'wss://ws.ifelse.io' is a public echo service for demo purposes only.
+  /// For production, replace with your own WebSocket server URL or set to null to disable.
+  /// 
+  /// Note: This service is currently disabled in favor of Firebase Realtime Database
+  /// as the primary source for doctor status updates.
   final String? url;
 
   WebSocketService({this.url = 'wss://ws.ifelse.io', this.enabled = true});
