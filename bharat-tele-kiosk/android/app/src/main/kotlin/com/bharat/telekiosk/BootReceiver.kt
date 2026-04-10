@@ -1,4 +1,4 @@
-package com.example.tele_kiosk
+package com.bharat.telekiosk
 
 import android.content.BroadcastReceiver
 import android.content.Context
