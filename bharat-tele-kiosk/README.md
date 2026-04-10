@@ -46,6 +46,7 @@ After login, you’ll land on the home screen with two actions: Book Appointment
 ## Where does the data come from?
 - Doctor availability is read from a sample Firebase Realtime Database. On first launch, the app seeds a few sample doctors (e.g., Dr Alice, Dr Bob, Dr Carol). This is only for demonstration.
 - Activity (like button taps or bookings) is logged to a mock backend inside the app (no data leaves your device unless you configure a real server URL).
+- The included `android/app/google-services.json` contains a Firebase API key and should be replaced or restricted before publishing the app.
 
 ## Troubleshooting
 - Can’t connect or see doctors? Make sure the device has internet access.
