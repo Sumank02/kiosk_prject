@@ -95,8 +95,11 @@ class _MyAppState extends State<MyApp> {
     _inactivityTimer?.cancel();
     _inactivityTimer = Timer(Duration(minutes: _timeoutMinutes), () {
       // On inactivity -> logout (go back to login)
-      Navigator.of(navigatorKey.currentContext!).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => LoginPage()), (r) => false);
+      final context = navigatorKey.currentContext;
+      if (context != null) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => LoginPage()), (r) => false);
+      }
     });
   }
 
