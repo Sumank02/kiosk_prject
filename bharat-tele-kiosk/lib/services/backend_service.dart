@@ -12,8 +12,7 @@ class BackendService {
   Future<bool> logAction(Map<String, dynamic> payload) async {
     try {
       if (endpoint == null) {
-        // Mock: just print and simulate success
-        print('Mock backend log: ${payload}');
+        // Mock: simulate backend with delay
         await Future.delayed(Duration(milliseconds: 400));
         return true;
       } else {
@@ -21,7 +20,6 @@ class BackendService {
         return resp.statusCode == 200;
       }
     } catch (e) {
-      print('Backend log failed: $e');
       return false;
     }
   }
@@ -42,7 +40,6 @@ Future<bool> downloadAndInstallApk(String apkUrl) async {
     await platform.invokeMethod('installApk', {'path': file.path});
     return true;
   } catch (e) {
-    print('update failed: $e');
     return false;
   }
 }
